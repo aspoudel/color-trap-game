@@ -1,0 +1,35 @@
+.slider-button {
+  position: fixed;
+  bottom: 50px;
+  width: 60px;
+  height: 60px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 9999;
+}
+
+.slider-content {
+  height: 400px;
+  width: 300px;
+  position: fixed;
+  bottom: 50px;
+  left: -300px;
+  transition: transform 0.3s ease;
+  background-color: antiquewhite;
+}
+
+.slider-button.open,  .slider-content.open {
+  transform: translateX(310px);
+}
+
+.chat-box {
+  height: 370px;
+  overflow-y: auto;
+  background-color: whitesmoke;
+}
+
+#messageText {
+  width: 248px;
+}
