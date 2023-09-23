@@ -1,0 +1,46 @@
+.navigation-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 25px;
+  top: 10;
+}
+
+.home, .rules {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-align: center;
+  position: relative;
+  font-size: 20px;
+  height: 100px;
+  color: #707070;
+  transition: background-color ease 0.15s;
+}
+
+.active {
+  color: #CACACA;
+}
+
+.home::after, .rules::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 100px; /* Adjust the width of the vertical line */
+  width: 1px;
+  background-color: #000; /* Adjust the color of the vertical line */
+}
+
+.home::after {
+  right: 0;
+}
+
+.rules::before {
+  left: 0;
+}
+
+.home:hover, .rules:hover {
+  cursor: pointer;
+  background-color: #3e3e3e;
+}

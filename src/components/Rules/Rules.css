@@ -1,0 +1,15 @@
+.rules-title {
+  font-size: 60px;
+  color: #808080;
+  padding: 50px 100px;
+}
+
+.rule-book {
+  padding-left: 100px;
+  color: #808080;
+  font-size: 25px;
+}
+
+.rules-line {
+  width: 80vw;
+}

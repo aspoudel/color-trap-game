@@ -1,18 +1,22 @@
 import React from "react";
-import Home from "./Home";
+import Home from "./Home/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SinglePlayerGame from "./SinglePlayerGame/SinglePlayerGame";
-import MultiPlayerGame from "./MultiPlayerGame/MultiPlayerGame";
 import WaitingScreen from "./WaitingScreen/WaitingScreen";
+import Rules from "./Rules/Rules";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/singlePlayerGame" element={<MultiPlayerGame />} />
-        <Route path="/multiPlayerGame" element={<MultiPlayerGame />} />
-        <Route path="/waitingForPlayers" element={<WaitingScreen />} />
+        <Route path="/singlePlayerGame" element={<SinglePlayerGame />} />
+        <Route path="/multiPlayerGame" element={<WaitingScreen />} />
+        <Route path="/rules" element={<Rules />} />
+        <Route
+          path="*"
+          element={<div className="page-not-found">404 Page Not found</div>}
+        />
       </Routes>
     </BrowserRouter>
   );

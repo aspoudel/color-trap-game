@@ -1,6 +1,6 @@
 .slider-button {
   position: fixed;
-  bottom: 50px;
+  bottom: 15%;
   width: 60px;
   height: 60px;
   background-color: #ccc;
@@ -8,16 +8,25 @@
   cursor: pointer;
   transition: transform 0.3s ease;
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-icon {
+  width: 40px;
+  height: 40px;
 }
 
 .slider-content {
   height: 400px;
   width: 300px;
   position: fixed;
-  bottom: 50px;
+  bottom: 15%;
   left: -300px;
   transition: transform 0.3s ease;
   background-color: antiquewhite;
+  padding: 5px;
 }
 
 .slider-button.open,  .slider-content.open {
@@ -27,9 +36,13 @@
 .chat-box {
   height: 370px;
   overflow-y: auto;
-  background-color: whitesmoke;
+  background-color: antiquewhite;
 }
 
 #messageText {
   width: 248px;
+}
+
+.message-alert {
+  background-color: red;
 }

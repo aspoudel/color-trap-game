@@ -1,122 +1,86 @@
 import React, { useState, useEffect, useRef } from "react";
-import { initialTiles, diceColors } from "../../constants/singlePlayerTiles";
+import { diceColors } from "../../constants/singlePlayerTiles";
 import "./SinglePlayerGame.css";
 import { io } from "socket.io-client";
+import { Howl, Howler } from "howler";
+import diceRollAudio from "../../assets/audio/dice_roll.mp3";
+import rigthTileAudio from "../../assets/audio/right_tile.mp3";
+import gameWonAudio from "../../assets/audio/game_won.mp3";
+import ReactConfetti from "react-confetti";
 
 export default function SinglePlayerGame() {
   const [tiles, setTiles] = useState([]);
   const [color, setColor] = useState("#000");
   const [score, setScore] = useState(0);
-  const [minutes, setMinutes] = useState("00");
-  const [seconds, setSeconds] = useState("00");
   const [shouldStartTimer, setShouldStartTimer] = useState(false);
   const [shouldPickColor, setShouldPickColor] = useState(false);
   const [shouldRollDice, setShouldRollDice] = useState(true);
   const [isTilesClickAllowed, setIsTilesClickAllowed] = useState(false);
+  const [playerWon, setPlayerWon] = useState(false);
+  const [shouldRunConfetti, setShouldRunConfetti] = useState(false);
+  const [tilesLeft, setTilesLeft] = useState(25);
+  const [windowDimension, setDimension] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  const detectSize = () => {
+    setDimension({ width: window.innerWidth, height: window.innerHeight });
+  };
 
   const tilesClickedNotAllowedClass = "single-player-color-tiles-not-allowed";
 
   // Socket reference so that we deal with the same socket in a particular client instance.
   const gameSocket = useRef(null);
 
-  // useEffect to shuffle the tiles only when the component is rendered the first time.
   useEffect(() => {
-    gameSocket.current = io("http://localhost:3000/game");
-
-    gameSocket.current.on(
-      "start-resume-game",
-      (gameState, timeInSeconds, index) => {
-        timeConverter(timeInSeconds);
-        setTiles(initialTiles);
-      }
-    );
-
-    // Socket connection to update the timer received from the server.
-    gameSocket.current.on("receive-updated-timer", (timeInSeconds) => {
-      timeConverter(timeInSeconds);
-    });
-
-    // Event listener to listen to when the client goes into the background
-    // because modern browsers throttle the execution of javascript timers to
-    // to optimize performance and conserve system resources for inactive tabs.
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("resize", detectSize);
+    return () => {
+      window.removeEventListener("resize", detectSize);
+    };
   }, []);
 
-  // useEffect to start the time after the dice is rolled.
+  // useEffect to shuffle the tiles only when the component is rendered the first time.
   useEffect(() => {
-    if (shouldStartTimer) {
-      setTimeout(() => {
-        startTime();
-      }, 1000);
-    }
-  }, [shouldStartTimer]);
+    gameSocket.current = io("http://localhost:3000/singlePlayer");
 
-  // Function to update the timer based on the server side timer whenever the
-  // client comes to the visible state from the background.
-  function handleVisibilityChange() {
-    if (document.visibilityState === "visible") {
-      gameSocket.current.emit("request-updated-timer");
-    }
-  }
-
-  /*
-  // Function to shuffle the array of tiles.
-  function shuffle(array) {
-    let currentIndex = array.length,
-      randomIndex;
-
-    while (currentIndex != 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      let temp = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temp;
-    }
-  }*/
-
-  // Function to start the timer after dice roll.
-  function startTime() {
-    setSeconds((prevSeconds) => {
-      let s = parseInt(prevSeconds) + 1;
-      if (s >= 60) {
-        setMinutes((prevMinutes) => {
-          let m = parseInt(prevMinutes) + 1;
-          let mtr = m.toString();
-          if (mtr.length < 2) {
-            mtr = "0" + mtr;
-          }
-          return mtr;
-        });
-        s = 0;
-      }
-      let str = s.toString();
-      if (str.length < 2) {
-        str = "0" + str;
-      }
-      return str;
+    gameSocket.current.on("load-game", (initialTiles) => {
+      console.log("Game Started", initialTiles);
+      setTiles(initialTiles);
+      setTilesLeft(initialTiles.length);
+      console.log(initialTiles.length);
     });
-    setTimeout(() => {
-      startTime();
-    }, 1000);
-  }
+  }, []);
 
+  useEffect(() => {
+    if (tilesLeft === 24) {
+      setShouldRunConfetti(true);
+      setPlayerWon(true);
+      const sound = new Howl({ src: [gameWonAudio] });
+      sound.play();
+      setTimeout(() => {
+        setShouldRunConfetti(false);
+      }, 5000);
+    }
+  }, [tilesLeft]);
   // Fuction to change the color of the tile after clicking on the tile.
-  function singlePlayerColorTileClicked(index) {
-    if (shouldPickColor) {
+  function singlePlayerColorTileClicked(index, matched) {
+    if (shouldPickColor && !matched) {
       const targetElement = document.querySelectorAll(
         ".single-player-color-tiles"
       )[index];
       targetElement.style.backgroundColor = tiles[index].color;
       setTimeout(() => {
         if (color === tiles[index].color) {
+          const sound = new Howl({ src: [rigthTileAudio] });
+          sound.play();
           tiles[index].matched = true;
           const updatedTiles = [...tiles];
           updatedTiles[index].matched = true;
           setTiles(updatedTiles);
           setScore(score + 1);
+          setTilesLeft((prevValue) => prevValue - 1);
         } else {
-          targetElement.style.backgroundColor = "#343434";
+          targetElement.style.backgroundColor = "#E3E3E3";
         }
       }, 1000);
       setShouldPickColor(false);
@@ -127,6 +91,8 @@ export default function SinglePlayerGame() {
 
   // Function to roll the dice.
   function rollDice() {
+    const sound = new Howl({ src: [diceRollAudio] });
+    sound.play();
     const max = diceColors.length - 1;
     const min = 0;
     const range = max - min + 1;
@@ -139,28 +105,9 @@ export default function SinglePlayerGame() {
     setShouldRollDice(false);
     setIsTilesClickAllowed(true);
   }
-
-  function timeConverter(timeInSeconds) {
-    const min = Math.floor(timeInSeconds / 60);
-    const sec = timeInSeconds % 60;
-    let minutes = min.toString();
-    if (minutes.length < 2) {
-      minutes = "0" + minutes;
-    }
-    let seconds = sec.toString();
-    if (seconds.length < 2) {
-      seconds = "0" + seconds;
-    }
-    setMinutes(minutes.toString());
-    setSeconds(seconds.toString());
-  }
-
+  Howler.volume(1.0);
   return (
     <div className="single-player-tiles-dice">
-      <div className="timer">
-        <p>{minutes}:</p>
-        <p>{seconds}</p>
-      </div>
       <div className="single-player-score">
         <p className="single-player-score-heading">Score:</p>
         <p className="single-player-score-value">{score}</p>
@@ -187,12 +134,15 @@ export default function SinglePlayerGame() {
                         }
                         key={index + childIndex}
                         onClick={() => {
-                          singlePlayerColorTileClicked(index + childIndex);
+                          singlePlayerColorTileClicked(
+                            index + childIndex,
+                            childElement.matched
+                          );
                         }}
                         style={{
                           backgroundColor: childElement.matched
-                            ? "#fff"
-                            : "#343434",
+                            ? "#292929"
+                            : "#E3E3E3",
                         }}
                       ></div>
                     ))}
@@ -224,6 +174,19 @@ export default function SinglePlayerGame() {
       )}
       {shouldRollDice && (
         <p className="single-player-roll-dice-text">Roll the dice now!</p>
+      )}
+
+      <p className="class-text">Practice Mode</p>
+
+      {playerWon && <p className="congrats-text winner-text">You Won!</p>}
+      {playerWon && (
+        <ReactConfetti
+          width={windowDimension.width}
+          height={windowDimension.height}
+          tweenDuration={1000}
+          gravity={0.05}
+          recycle={shouldRunConfetti}
+        />
       )}
     </div>
   );

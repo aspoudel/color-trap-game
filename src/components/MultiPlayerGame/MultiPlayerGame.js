@@ -1,104 +1,99 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./MultiPlayerGame.css";
 import ChatMultiplayer from "../ChatMultiplayer/ChatMultiplayer";
 import { io } from "socket.io-client";
 import person_icon from "../../assets/icons/player_icon.svg";
+import { Howl, Howler } from "howler";
+import diceRollAudio from "../../assets/audio/dice_roll.mp3";
+import rigthTileAudio from "../../assets/audio/right_tile.mp3";
+import gameWonAudio from "../../assets/audio/game_won.mp3";
+import gameLostAudio from "../../assets/audio/game_lost.mp3";
+import ReactConfetti from "react-confetti";
 
-export default function MultiPlayerGame() {
-  const [tiles, setTiles] = useState([]);
-  const [diceColor, setDiceColor] = useState("#000");
+export default function MultiPlayerGame(props) {
+  const {
+    isTilesClickAllowed,
+    setIsTilesClickAllowed,
+    isRollDiceAllowed,
+    setIsRollDiceAllowed,
+    playerWon,
+    setPlayerWon,
+    playerLost,
+    setPlayerLost,
+    tiles,
+    setTiles,
+    diceColor,
+    setDiceColor,
+    shouldStartTimer,
+    setShouldStartTimer,
+    minutes,
+    setMinutes,
+    seconds,
+    setSeconds,
+    players,
+    counter1,
+    setCounter1,
+    counter2,
+    setCounter2,
+    counter3,
+    setCounter3,
+    counter4,
+    setCounter4,
+    playerCode1,
+    gameRoomId,
+    gameSocket,
+    timer1,
+    timer2,
+    timer3,
+    timer4,
+    setShowPlayerOneTimer,
+    setShowPlayerTwoTimer,
+    setShowPlayerThreeTimer,
+    setShowPlayerFourTimer,
+  } = props;
+  // const [isTilesClickAllowed, setIsTilesClickAllowed] = useState(false);
+  // const [isRollDiceAllowed, setIsRollDiceAllowed] = useState(false);
+  // const [playerWon, setPlayerWon] = useState(false);
+  // const [playerLost, setPlayerLost] = useState(false);
+  // const [tiles, setTiles] = useState([]);
+  // const [diceColor, setDiceColor] = useState("#000");
+  // const [shouldStartTimer, setShouldStartTimer] = useState(false);
+  // const [minutes, setMinutes] = useState("00");
+  // const [seconds, setSeconds] = useState("00");
+  // const [players, setPlayers] = useState([]);
+  // const [counter1, setCounter1] = useState(0);
+  // const [counter2, setCounter2] = useState(0);
+  // const [counter3, setCounter3] = useState(0);
+  // const [counter4, setCounter4] = useState(0);
   const [score, setScore] = useState(0);
-  const [minutes, setMinutes] = useState("00");
-  const [seconds, setSeconds] = useState("00");
-  const [shouldStartTimer, setShouldStartTimer] = useState(false);
-  const [isTilesClickAllowed, setIsTilesClickAllowed] = useState(false);
-  const [isRollDiceAllowed, setIsRollDiceAllowed] = useState(false);
-  const [playerWon, setPlayerWon] = useState(false);
-  const [playerLost, setPlayerLost] = useState(false);
-  const [counter1, setCounter1] = useState(0);
-  const [counter2, setCounter2] = useState(0);
-  const [counter3, setCounter3] = useState(0);
-  const [counter4, setCounter4] = useState(0);
-  const [players, setPlayers] = useState([]);
-  let timer1 = null;
-  let timer2 = null;
-  let timer3 = null;
-  let timer4 = null;
+  const [isDiceRolling, setIsDiceRolling] = useState(false);
+  const [windowDimension, setDimension] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  const detectSize = () => {
+    setDimension({ width: window.innerWidth, height: window.innerHeight });
+  };
+  const [shouldRunConfetti, setShouldRunConfetti] = useState(false);
 
-  // Socket reference so that we deal with the same socket in a particular client instance.
-  const gameSocket = useRef(null);
-  const playerCode1 = useRef(null);
-  const playerCode2 = useRef(null);
-  const playerCode3 = useRef(null);
-  const playerCode4 = useRef(null);
-  const gameRoomId = useRef(null);
+  // const playerCode1 = useRef(null);
+  // const playerCode2 = useRef(null);
+  // const playerCode3 = useRef(null);
+  // const playerCode4 = useRef(null);
+  // const gameRoomId = useRef(null);
+  // let gameSocket = useRef(null);
   const tilesClickedNotAllowedClass = "multi-player-color-tiles-not-allowed";
+
+  useEffect(() => {
+    window.addEventListener("resize", detectSize);
+    return () => {
+      window.removeEventListener("resize", detectSize);
+    };
+  }, []);
 
   // useEffect to shuffle the tiles only when the component is rendered the first time.
   useEffect(() => {
-    gameSocket.current = io("http://localhost:3000/game");
-
-    // Socket connection to set the initial game state from the server.
-    gameSocket.current.on(
-      "load-game",
-      (gameState, timeInSeconds, code, roomId) => {
-        timeConverter(timeInSeconds);
-        playerCode1.current = code;
-        gameRoomId.current = roomId;
-        console.log(gameState);
-        console.log(roomId);
-        if (code === 0) {
-          setIsRollDiceAllowed(true);
-        }
-
-        // This piece of code will probably not work right now because whenever we
-        // refresh the screen after the game is over the client will get a new
-        // game socket Id.
-        if (gameState.playerWon) {
-          if (code === gameState.playerWon) {
-            setPlayerWon(true);
-          } else {
-            setPlayerLost(true);
-          }
-        }
-        setTiles(gameState.tiles);
-        setDiceColor(gameState.diceColor);
-        setIsTilesClickAllowed(gameState.isTilesClickAllowed);
-        if (gameState.shouldStartTimer === true) {
-          setShouldStartTimer(gameState.shouldStartTimer);
-          setMinutes(gameState.minutes);
-          setSeconds(gameState.seconds);
-        }
-      }
-    );
-
-    gameSocket.current.on("players-joined", (playersArray, code) => {
-      console.log(playersArray);
-      setPlayers(playersArray);
-      for (let i in playersArray) {
-        if (i != playerCode1.current && playerCode2.current === null) {
-          console.log("Dusra khiladi " + i);
-          playerCode2.current = i;
-          console.log(playerCode2.current);
-        } else if (
-          i != playerCode1.current &&
-          i != playerCode2.current &&
-          playerCode3.current === null
-        ) {
-          console.log("Teesra khiladi " + i);
-          playerCode3.current = i;
-        } else if (
-          i != playerCode1.current &&
-          i != playerCode2.current &&
-          i != playerCode3.current &&
-          playerCode4.current === null
-        ) {
-          console.log("Chautha khiladi " + i);
-          playerCode4.current = i;
-        }
-      }
-    });
-
     // Socket connection to update the timer received from the server.
     gameSocket.current.on("receive-updated-timer", (timeInSeconds) => {
       console.log("Got updated timer");
@@ -109,8 +104,14 @@ export default function MultiPlayerGame() {
     gameSocket.current.on(
       "multi-player-tiles-clicked-receive",
       (isMatched, tiles, score, code, nextPlayerCode, isAllowed, won) => {
+        setShowPlayerOneTimer(false);
+        setShowPlayerTwoTimer(false);
+        setShowPlayerThreeTimer(false);
+        setShowPlayerFourTimer(false);
         console.log("Got multi player tiles clicked");
         if (isMatched) {
+          const sound = new Howl({ src: [rigthTileAudio] });
+          sound.play();
           setTiles(tiles);
           if (playerCode1.current === code) {
             setScore(score);
@@ -123,9 +124,17 @@ export default function MultiPlayerGame() {
         if (won != null) {
           setIsRollDiceAllowed(false);
           if (won === playerCode1.current) {
+            setShouldRunConfetti(true);
             setPlayerWon(true);
+            const sound = new Howl({ src: [gameWonAudio] });
+            sound.play();
+            setTimeout(() => {
+              setShouldRunConfetti(false);
+            }, 5000);
           } else {
             setPlayerLost(true);
+            const sound = new Howl({ src: [gameLostAudio] });
+            sound.play();
           }
         }
       }
@@ -145,86 +154,11 @@ export default function MultiPlayerGame() {
       }
     );
 
-    let cc = null;
-    gameSocket.current.on("player-timer-call", (code) => {
-      cc = code;
-      console.log(code, "'s turn now");
-      console.log(playerCode2.current + " " + code);
-      console.log(playerCode2.current == code); // This gives true
-      if (playerCode1.current === code) {
-        console.log("His turn");
-        //clearInterval(timer);
-        setCounter1(10);
-        setTimeout(() => {
-          setCounter1((prevCounter) => prevCounter - 1);
-          playerTimerCall1();
-        }, 1000);
-      } else if (playerCode2.current == code) {
-        // While this not
-        console.log("mera bhi");
-        setCounter2(10);
-        setTimeout(() => {
-          setCounter2((prevCounter) => prevCounter - 1);
-          playerTimerCall2();
-        }, 1000);
-      } else if (playerCode3.current == code) {
-        console.log("mera mera");
-        setCounter3(10);
-        setTimeout(() => {
-          setCounter3((prevCounter) => prevCounter - 1);
-          playerTimerCall3();
-        }, 1000);
-      } else if (playerCode4.current == code) {
-        console.log("haan ji me akhri");
-        setCounter4(10);
-        setTimeout(() => {
-          setCounter4((prevCounter) => prevCounter - 1);
-          playerTimerCall4();
-        }, 1000);
-      }
-    });
-
-    function playerTimerCall1() {
-      if (playerCode1.current === cc) {
-        console.log("Timer 1 function called");
-        timer1 = setTimeout(() => {
-          setCounter1((prevCounter) => prevCounter - 1);
-          playerTimerCall1();
-        }, 1000);
-      }
-    }
-
-    function playerTimerCall2() {
-      if (playerCode2.current == cc) {
-        timer2 = setTimeout(() => {
-          setCounter2((prevCounter) => prevCounter - 1);
-          playerTimerCall2();
-        }, 1000);
-      }
-    }
-
-    function playerTimerCall3() {
-      if (playerCode3.current == cc) {
-        timer3 = setTimeout(() => {
-          setCounter3((prevCounter) => prevCounter - 1);
-          playerTimerCall3();
-        }, 1000);
-      }
-    }
-
-    function playerTimerCall4() {
-      if (playerCode4.current == cc) {
-        timer4 = setTimeout(() => {
-          setCounter4((prevCounter) => prevCounter - 1);
-          playerTimerCall4();
-        }, 1000);
-      }
-    }
-
     // Socket connection to perform dice roll with the server result.
     gameSocket.current.on(
       "roll-dice-receive",
       (diceColor, code, isTilesClickAllowed, serverShouldStartTimer) => {
+        setIsDiceRolling(false);
         console.log(
           "Here",
           diceColor,
@@ -253,31 +187,6 @@ export default function MultiPlayerGame() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
-
-  // To access the counter only after its value changes.
-  useEffect(() => {
-    // Clearing the timer after 10 seconds.
-    if (counter1 <= 0) {
-      clearTimeout(timer1);
-      setCounter1(0);
-      console.log("Timer 1 function cleared");
-    }
-    if (counter2 <= 0) {
-      clearTimeout(timer2);
-      setCounter2(0);
-      console.log("Timer 2 function cleared");
-    }
-    if (counter3 <= 0) {
-      clearTimeout(timer3);
-      setCounter3(0);
-      console.log("Timer 3 function cleared");
-    }
-    if (counter4 <= 0) {
-      clearTimeout(timer4);
-      setCounter4(0);
-      console.log("Timer 4 function cleared");
-    }
-  }, [counter1, counter2, counter3, counter4]);
 
   // useEffect to start the time after the dice is rolled.
   useEffect(() => {
@@ -344,7 +253,6 @@ export default function MultiPlayerGame() {
   function multiPlayerColorTileClicked(index, matched) {
     if (isTilesClickAllowed && !matched) {
       setIsTilesClickAllowed(false);
-
       console.log("All timer function cleared");
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -362,7 +270,7 @@ export default function MultiPlayerGame() {
       )[index];
       targetElement.style.backgroundColor = tiles[index].color;
       setTimeout(() => {
-        targetElement.style.backgroundColor = "#343434";
+        targetElement.style.backgroundColor = "#E3E3E3";
         gameSocket.current.emit(
           "multi-player-tiles-clicked-request",
           index,
@@ -375,127 +283,115 @@ export default function MultiPlayerGame() {
 
   // Function to call roll dice in the server.
   function rollDice() {
+    const sound = new Howl({ src: [diceRollAudio] });
+    sound.play();
     console.log("Player Code: ", playerCode1);
     setIsRollDiceAllowed(false);
+    setIsDiceRolling(true);
     gameSocket.current.emit(
       "roll-dice-request",
       playerCode1.current,
       gameRoomId.current
     );
   }
-
-  function startGame() {
-    gameSocket.current.emit(
-      "start-game",
-      gameRoomId.current,
-      playerCode1.current
-    );
-  }
-
+  Howler.volume(1.0);
   return (
-    <div className="multi-player-tiles-dice">
-      {players.length >= 2 && (
-        <div className="corner player-icon-top-left">
-          <img src={person_icon}></img>
-          <p>{counter2}</p>
+    <React.Fragment>
+      <div className="multi-player-tiles-dice">
+        <div className="timer">
+          <p>{minutes}:</p>
+          <p>{seconds}</p>
         </div>
-      )}
-      {players.length >= 3 && (
-        <div className="corner player-icon-top-right">
-          <img src={person_icon}></img>
-          <p>{counter3}</p>
+        <div className="multi-player-score">
+          <p className="multi-player-score-heading">Score:</p>
+          <p className="multi-player-score-value">{score}</p>
         </div>
-      )}
-      {players.length >= 1 && (
-        <div className="corner player-icon-bottom-left">
-          <img src={person_icon}></img>
-          <p>{counter1}</p>
-        </div>
-      )}
-      {players.length === 4 && (
-        <div className="corner player-icon-bottom-right">
-          <img src={person_icon}></img>
-          <p>{counter4}</p>
-        </div>
-      )}
-      <div className="timer">
-        <p>{minutes}:</p>
-        <p>{seconds}</p>
-      </div>
-      <div className="multi-player-score">
-        <p className="multi-player-score-heading">Score:</p>
-        <p className="multi-player-score-value">{score}</p>
-      </div>
-      <div className="multi-player-color-tiles-wrapper">
-        {tiles.map((tile, index) => {
-          const parentIndex = Math.floor(index / 5);
-          const parentKey = `parent-${parentIndex}`;
+        <div className="multi-player-color-tiles-wrapper">
+          {tiles.map((tile, index) => {
+            const parentIndex = Math.floor(index / 5);
+            const parentKey = `parent-${parentIndex}`;
 
-          return (
-            <React.Fragment key={index}>
-              {index % 5 === 0 && (
-                <div className="parent-div " key={parentKey}>
-                  {tiles
-                    .slice(index, index + 5)
-                    .map((childElement, childIndex) => (
-                      <div
-                        className={
-                          isTilesClickAllowed
-                            ? "multi-player-color-tiles "
-                            : "multi-player-color-tiles " +
-                              tilesClickedNotAllowedClass
-                        }
-                        key={index + childIndex}
-                        onClick={() => {
-                          multiPlayerColorTileClicked(
-                            index + childIndex,
-                            childElement.matched
-                          );
-                        }}
-                        style={{
-                          backgroundColor: childElement.matched
-                            ? "#fff"
-                            : "#343434",
-                        }}
-                      ></div>
-                    ))}
-                </div>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-      <div className="multi-player-dice-wrapper">
-        <div className="multi-player-dice">
-          <div
-            className="multi-player-dice-color-holder"
-            style={{ backgroundColor: diceColor }}
-          ></div>
+            return (
+              <React.Fragment key={index}>
+                {index % 5 === 0 && (
+                  <div className="parent-div " key={parentKey}>
+                    {tiles
+                      .slice(index, index + 5)
+                      .map((childElement, childIndex) => (
+                        <div
+                          className={
+                            isTilesClickAllowed
+                              ? "multi-player-color-tiles "
+                              : "multi-player-color-tiles " +
+                                tilesClickedNotAllowedClass
+                          }
+                          key={index + childIndex}
+                          onClick={() => {
+                            multiPlayerColorTileClicked(
+                              index + childIndex,
+                              childElement.matched
+                            );
+                          }}
+                          style={{
+                            backgroundColor: childElement.matched
+                              ? "#292929"
+                              : "#E3E3E3",
+                          }}
+                        ></div>
+                      ))}
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
-      </div>
-      <div className="multi-player-roll-dice-button-wrapper">
-        <button
-          className="multi-player-roll-dice-button"
-          disabled={!isRollDiceAllowed}
-          onClick={rollDice}
-        >
-          Roll Dice
-        </button>
-      </div>
-      <button onClick={startGame} className="game-start-button">
-        Start Game
-      </button>
-      {isTilesClickAllowed && (
-        <p className="multi-player-roll-dice-text">Pick a color now!</p>
-      )}
-      {isRollDiceAllowed && (
-        <p className="multi-player-roll-dice-text">Roll the dice now!</p>
-      )}
+        <div className="multi-player-dice-wrapper">
+          <div className="multi-player-dice">
+            <div
+              className={
+                isDiceRolling
+                  ? "multi-player-dice-color-holder dice-rolling"
+                  : "multi-player-dice-color-holder"
+              }
+              style={{ backgroundColor: diceColor }}
+            ></div>
+          </div>
+        </div>
+        <div className="multi-player-roll-dice-button-wrapper">
+          <button
+            className="multi-player-roll-dice-button"
+            disabled={!isRollDiceAllowed}
+            onClick={rollDice}
+          >
+            Roll Dice
+          </button>
+        </div>
 
-      {playerWon && <p className="congrats-text winner-text">You Won!</p>}
-      {playerLost && <p className="congrats-text loser-text">You Lost!</p>}
+        {isTilesClickAllowed && (
+          <p className="multi-player-roll-dice-text">Pick a color now!</p>
+        )}
+        {isRollDiceAllowed && (
+          <p className="multi-player-roll-dice-text">Roll the dice now!</p>
+        )}
 
-      <ChatMultiplayer></ChatMultiplayer>
-    </div>
+        {playerWon && <p className="congrats-text winner-text">You Won!</p>}
+        {playerWon && (
+          <ReactConfetti
+            width={windowDimension.width}
+            height={windowDimension.height}
+            tweenDuration={1000}
+            gravity={0.05}
+            recycle={shouldRunConfetti}
+          />
+        )}
+        {playerLost && (
+          <div className="congrats-text">
+            <p className="loser-text">You Lost!</p>
+            <p className="lost-subtitle">But we are proud you tried</p>
+          </div>
+        )}
+      </div>
+      <ChatMultiplayer gameRoomId={gameRoomId}></ChatMultiplayer>
+    </React.Fragment>
   );
 }
