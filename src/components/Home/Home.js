@@ -11,7 +11,7 @@ export default function Home() {
       <NavigationBar />
       <h1 className="title">Cobra's Den</h1>
       <p className="post-title">
-        Where&nbsp;&nbsp;People&nbsp;&nbsp;Meet&nbsp;&nbsp;Victory
+        Get&nbsp;&nbsp;Ready&nbsp;&nbsp;For&nbsp;&nbsp;Battle
       </p>
       <div className="game-modes">
         <Link className="game-mode-links" to="/singlePlayerGame">

@@ -31,14 +31,9 @@ export default function MultiPlayerGame(props) {
     setMinutes,
     seconds,
     setSeconds,
-    players,
-    counter1,
     setCounter1,
-    counter2,
     setCounter2,
-    counter3,
     setCounter3,
-    counter4,
     setCounter4,
     playerCode1,
     gameRoomId,
@@ -52,20 +47,6 @@ export default function MultiPlayerGame(props) {
     setShowPlayerThreeTimer,
     setShowPlayerFourTimer,
   } = props;
-  // const [isTilesClickAllowed, setIsTilesClickAllowed] = useState(false);
-  // const [isRollDiceAllowed, setIsRollDiceAllowed] = useState(false);
-  // const [playerWon, setPlayerWon] = useState(false);
-  // const [playerLost, setPlayerLost] = useState(false);
-  // const [tiles, setTiles] = useState([]);
-  // const [diceColor, setDiceColor] = useState("#000");
-  // const [shouldStartTimer, setShouldStartTimer] = useState(false);
-  // const [minutes, setMinutes] = useState("00");
-  // const [seconds, setSeconds] = useState("00");
-  // const [players, setPlayers] = useState([]);
-  // const [counter1, setCounter1] = useState(0);
-  // const [counter2, setCounter2] = useState(0);
-  // const [counter3, setCounter3] = useState(0);
-  // const [counter4, setCounter4] = useState(0);
   const [score, setScore] = useState(0);
   const [isDiceRolling, setIsDiceRolling] = useState(false);
   const [windowDimension, setDimension] = useState({
@@ -77,12 +58,6 @@ export default function MultiPlayerGame(props) {
   };
   const [shouldRunConfetti, setShouldRunConfetti] = useState(false);
 
-  // const playerCode1 = useRef(null);
-  // const playerCode2 = useRef(null);
-  // const playerCode3 = useRef(null);
-  // const playerCode4 = useRef(null);
-  // const gameRoomId = useRef(null);
-  // let gameSocket = useRef(null);
   const tilesClickedNotAllowedClass = "multi-player-color-tiles-not-allowed";
 
   useEffect(() => {
@@ -96,7 +71,6 @@ export default function MultiPlayerGame(props) {
   useEffect(() => {
     // Socket connection to update the timer received from the server.
     gameSocket.current.on("receive-updated-timer", (timeInSeconds) => {
-      console.log("Got updated timer");
       timeConverter(timeInSeconds);
     });
 
@@ -108,7 +82,6 @@ export default function MultiPlayerGame(props) {
         setShowPlayerTwoTimer(false);
         setShowPlayerThreeTimer(false);
         setShowPlayerFourTimer(false);
-        console.log("Got multi player tiles clicked");
         if (isMatched) {
           const sound = new Howl({ src: [rigthTileAudio] });
           sound.play();
@@ -148,6 +121,7 @@ export default function MultiPlayerGame(props) {
         if (code === playerCode1.current) {
           setIsRollDiceAllowed(false);
         }
+        console.log(nextPlayerCode + " should have its dice allowed");
         if (nextPlayerCode === playerCode1.current) {
           setIsRollDiceAllowed(true);
         }
@@ -157,19 +131,9 @@ export default function MultiPlayerGame(props) {
     // Socket connection to perform dice roll with the server result.
     gameSocket.current.on(
       "roll-dice-receive",
-      (diceColor, code, isTilesClickAllowed, serverShouldStartTimer) => {
+      (diceColor, code, isTilesClickAllowed) => {
         setIsDiceRolling(false);
-        console.log(
-          "Here",
-          diceColor,
-          code,
-          isTilesClickAllowed,
-          serverShouldStartTimer
-        );
         setDiceColor(diceColor);
-        if (serverShouldStartTimer) {
-          setShouldStartTimer(serverShouldStartTimer);
-        }
         if (playerCode1.current === code) {
           setIsTilesClickAllowed(isTilesClickAllowed);
         }
@@ -253,7 +217,6 @@ export default function MultiPlayerGame(props) {
   function multiPlayerColorTileClicked(index, matched) {
     if (isTilesClickAllowed && !matched) {
       setIsTilesClickAllowed(false);
-      console.log("All timer function cleared");
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
@@ -285,7 +248,6 @@ export default function MultiPlayerGame(props) {
   function rollDice() {
     const sound = new Howl({ src: [diceRollAudio] });
     sound.play();
-    console.log("Player Code: ", playerCode1);
     setIsRollDiceAllowed(false);
     setIsDiceRolling(true);
     gameSocket.current.emit(

@@ -6,6 +6,7 @@ import "./WaitingScreen.css";
 import MultiPlayerGame from "../MultiPlayerGame/MultiPlayerGame";
 import Radar from "../Radar/Radar";
 import TimerBar from "../TimerBar/TimerBar";
+import HackTimer from "hacktimer/HackTimer";
 
 export default function WaitingScreen() {
   const [isTilesClickAllowed, setIsTilesClickAllowed] = useState(false);
@@ -42,20 +43,23 @@ export default function WaitingScreen() {
   // Socket reference so that we deal with the same socket in a particular client instance.
   let gameSocket = useRef(null);
   useEffect(() => {
-    gameSocket.current = io("http://localhost:3000/game");
+    gameSocket.current = io(
+      "http://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:4000/game"
+    );
 
     // Socket connection to set the initial game state from the server.
     gameSocket.current.on(
       "load-game",
       (gameState, timeInSeconds, code, roomId) => {
+        console.log("Player Code: " + code);
+        console.log("Room ID: " + roomId);
         timeConverter(timeInSeconds);
         playerCode1.current = code;
         gameRoomId.current = roomId;
-        console.log(gameState);
-        console.log(roomId);
-        if (code === 0) {
-          setIsRollDiceAllowed(true);
-        }
+
+        // if (code === ) {
+        //   setIsRollDiceAllowed(true);
+        // }
 
         // This piece of code will probably not work right now because whenever we
         // refresh the screen after the game is over the client will get a new
@@ -79,19 +83,15 @@ export default function WaitingScreen() {
     );
 
     gameSocket.current.on("players-joined", (playersArray, code) => {
-      console.log(playersArray);
       setPlayers(playersArray);
-      for (let i in playersArray) {
+      for (let i of playersArray) {
         if (i != playerCode1.current && playerCode2.current === null) {
-          console.log("Dusra khiladi " + i);
           playerCode2.current = i;
-          console.log(playerCode2.current);
         } else if (
           i != playerCode1.current &&
           i != playerCode2.current &&
           playerCode3.current === null
         ) {
-          console.log("Teesra khiladi " + i);
           playerCode3.current = i;
         } else if (
           i != playerCode1.current &&
@@ -99,23 +99,20 @@ export default function WaitingScreen() {
           i != playerCode3.current &&
           playerCode4.current === null
         ) {
-          console.log("Chautha khiladi " + i);
           playerCode4.current = i;
         }
       }
     });
 
+    gameSocket.current.on("player-left-event", (playerIndex, newPlayers) => {
+      setPlayers(newPlayers);
+    });
+
     let cc = null;
     gameSocket.current.on("player-timer-call", (code) => {
-      console.log("Yaha");
       cc = code;
-      console.log(code, "'s turn now");
-      console.log(playerCode2.current + " " + code);
-      console.log(playerCode2.current == code); // This gives true
+      console.log(code);
       if (playerCode1.current === code) {
-        console.log("His turn");
-        //clearInterval(timer);
-        console.log("Timer show: " + showPlayerOneTimer);
         setShowPlayerOneTimer(true);
         setCounter1(10);
         setTimeout(() => {
@@ -123,8 +120,6 @@ export default function WaitingScreen() {
           playerTimerCall1();
         }, 1000);
       } else if (playerCode2.current == code) {
-        // While this not
-        console.log("mera bhi");
         setShowPlayerTwoTimer(true);
         setCounter2(10);
         setTimeout(() => {
@@ -132,7 +127,6 @@ export default function WaitingScreen() {
           playerTimerCall2();
         }, 1000);
       } else if (playerCode3.current == code) {
-        console.log("mera mera");
         setShowPlayerThreeTimer(true);
         setCounter3(10);
         setTimeout(() => {
@@ -140,7 +134,6 @@ export default function WaitingScreen() {
           playerTimerCall3();
         }, 1000);
       } else if (playerCode4.current == code) {
-        console.log("haan ji me akhri");
         setShowPlayerFourTimer(true);
         setCounter4(10);
         setTimeout(() => {
@@ -187,9 +180,18 @@ export default function WaitingScreen() {
     }
 
     // Socket connection to fire up the game screen from the waiting screen.
-    gameSocket.current.on("start-game-screen", () => {
-      setShouldRender(true);
-    });
+    gameSocket.current.on(
+      "start-game-screen",
+      (code, serverShouldStartTimer) => {
+        setShouldRender(true);
+        if (code === playerCode1.current) {
+          setIsRollDiceAllowed(true);
+        }
+        if (serverShouldStartTimer) {
+          setShouldStartTimer(serverShouldStartTimer);
+        }
+      }
+    );
 
     return () => {
       gameSocket.current.disconnect();
@@ -300,7 +302,10 @@ export default function WaitingScreen() {
       <div className="corner player-icon-bottom-left">
         {players.length >= 1 ? (
           <div className="person-icon-holder">
-            <img src={person_icon}></img>
+            <div>
+              <img src={person_icon}></img>
+              <p>You</p>
+            </div>
             {showPlayerOneTimer && <TimerBar />}
           </div>
         ) : (
@@ -370,14 +375,9 @@ export default function WaitingScreen() {
           setMinutes={setMinutes}
           seconds={seconds}
           setSeconds={setSeconds}
-          players={players}
-          counter1={counter1}
           setCounter1={setCounter1}
-          counter2={counter2}
           setCounter2={setCounter2}
-          counter3={counter3}
           setCounter3={setCounter3}
-          counter4={counter4}
           setCounter4={setCounter4}
           playerCode1={playerCode1}
           gameRoomId={gameRoomId}

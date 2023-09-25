@@ -20,15 +20,16 @@ export default function ChatMultiplayer(props) {
       setMessageReceiveAlert(false);
     }
     nonStateIsOpen.current = !nonStateIsOpen.current;
-    console.log(nonStateIsOpen.current);
   };
 
   useEffect(() => {
     // Initializing the chat socket.
-    console.log("Chat game room id: ", gameRoomId.current);
-    chatSocket.current = io("http://localhost:3000/chat", {
-      auth: { gameRoomId: gameRoomId.current },
-    });
+    chatSocket.current = io(
+      "http://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:4000/chat",
+      {
+        auth: { gameRoomId: gameRoomId.current },
+      }
+    );
 
     chatSocket.current.on("connect", () => {});
 
@@ -60,7 +61,6 @@ export default function ChatMultiplayer(props) {
   // Function to display the message
   function displayMessage(newMessage) {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
-    console.log("here: " + nonStateIsOpen.current);
     if (!nonStateIsOpen.current) {
       setMessageReceiveAlert(true);
     }
