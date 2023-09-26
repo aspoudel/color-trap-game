@@ -44,7 +44,7 @@ export default function WaitingScreen() {
   let gameSocket = useRef(null);
   useEffect(() => {
     gameSocket.current = io(
-      "http://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:3000/game"
+      "https://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:3000/game"
     );
 
     // Socket connection to set the initial game state from the server.
