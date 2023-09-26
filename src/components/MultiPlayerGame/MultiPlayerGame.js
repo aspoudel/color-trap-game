@@ -83,10 +83,10 @@ export default function MultiPlayerGame(props) {
         setShowPlayerThreeTimer(false);
         setShowPlayerFourTimer(false);
         if (isMatched) {
-          const sound = new Howl({ src: [rigthTileAudio] });
-          sound.play();
           setTiles(tiles);
           if (playerCode1.current === code) {
+            const sound = new Howl({ src: [rigthTileAudio] });
+            sound.play();
             setScore(score);
           }
         }
