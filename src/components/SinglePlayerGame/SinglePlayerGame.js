@@ -52,7 +52,7 @@ export default function SinglePlayerGame() {
   }, []);
 
   useEffect(() => {
-    if (tilesLeft === 24) {
+    if (tilesLeft === 0) {
       setShouldRunConfetti(true);
       setPlayerWon(true);
       const sound = new Howl({ src: [gameWonAudio] });
