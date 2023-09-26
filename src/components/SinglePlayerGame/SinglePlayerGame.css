@@ -224,6 +224,18 @@
   text-align: center;
   padding: 20px;
   z-index: 9999; /* Set a high z-index value to ensure it appears on top */
+
+  @media(max-width: 576px) {
+    font-size: 50px;
+  }
+
+  @media(min-width: 576px) and (max-width: 768px) {
+    font-size: 80px;
+  }
+
+  @media(min-width: 992px) {
+    font-size: 150px;
+  }
 }
 
 .winner-text {
