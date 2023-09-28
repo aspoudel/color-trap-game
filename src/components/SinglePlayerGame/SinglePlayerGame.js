@@ -42,7 +42,7 @@ export default function SinglePlayerGame() {
   // useEffect to shuffle the tiles only when the component is rendered the first time.
   useEffect(() => {
     gameSocket.current = io(
-      "https://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:3000/singlePlayer"
+      "http://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:3000/singlePlayer"
     );
 
     gameSocket.current.on("load-game", (initialTiles) => {

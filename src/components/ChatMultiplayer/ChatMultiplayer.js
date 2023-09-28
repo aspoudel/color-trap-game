@@ -25,7 +25,7 @@ export default function ChatMultiplayer(props) {
   useEffect(() => {
     // Initializing the chat socket.
     chatSocket.current = io(
-      "https://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:3000/chat",
+      "http://ec2-3-110-118-192.ap-south-1.compute.amazonaws.com:3000/chat",
       {
         auth: { gameRoomId: gameRoomId.current },
       }
