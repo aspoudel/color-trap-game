@@ -51,8 +51,6 @@ export default function WaitingScreen() {
     gameSocket.current.on(
       "load-game",
       (gameState, timeInSeconds, code, roomId) => {
-        console.log("Player Code: " + code);
-        console.log("Room ID: " + roomId);
         timeConverter(timeInSeconds);
         playerCode1.current = code;
         gameRoomId.current = roomId;
