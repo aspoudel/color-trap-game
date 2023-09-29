@@ -41,7 +41,7 @@ export default function SinglePlayerGame() {
 
   // useEffect to shuffle the tiles only when the component is rendered the first time.
   useEffect(() => {
-    gameSocket.current = io("https://colortrapgame.com:3000/singlePlayer");
+    gameSocket.current = io("https://www.colortrapgame.com:3000/singlePlayer");
 
     gameSocket.current.on("load-game", (initialTiles) => {
       setTiles(initialTiles);
