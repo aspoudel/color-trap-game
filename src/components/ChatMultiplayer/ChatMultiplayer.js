@@ -6,8 +6,8 @@ import chatIcon from "../../assets/icons/chat_icon.svg";
 export default function ChatMultiplayer(props) {
   const { gameRoomId } = props;
   const [messages, setMessages] = useState([]);
+  const [newMessages, setNewMessages] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [messageReceviedAlert, setMessageReceiveAlert] = useState(false);
   const messageRef = useRef();
   // Socket reference so that we deal with the same socket in a particular client instance.
   const chatSocket = useRef(null);
@@ -16,9 +16,7 @@ export default function ChatMultiplayer(props) {
   // Toggler function to open or close the chat drawer.
   const toggleSlider = () => {
     setIsOpen(!isOpen);
-    if (!nonStateIsOpen.current) {
-      setMessageReceiveAlert(false);
-    }
+    setNewMessages((prevMessages) => 0);
     nonStateIsOpen.current = !nonStateIsOpen.current;
   };
 
@@ -59,7 +57,7 @@ export default function ChatMultiplayer(props) {
   function displayMessage(newMessage) {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     if (!nonStateIsOpen.current) {
-      setMessageReceiveAlert(true);
+      setNewMessages((prevNumber) => prevNumber + 1);
     }
   }
 
@@ -87,12 +85,13 @@ export default function ChatMultiplayer(props) {
         </div>
       </div>
       <div
-        className={`slider-button ${isOpen ? "open" : ""} ${
-          messageReceviedAlert ? "message-alert" : ""
-        }`}
+        className={`slider-button ${isOpen ? "open" : ""}`}
         onClick={toggleSlider}
       >
         <img src={chatIcon} className="slider-icon"></img>
+        {newMessages !== 0 && (
+          <div className="message-count">{newMessages}</div>
+        )}
       </div>
     </div>
   );

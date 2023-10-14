@@ -1,9 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import "./MultiPlayerGame.css";
 import ChatMultiplayer from "../ChatMultiplayer/ChatMultiplayer";
-import { io } from "socket.io-client";
-import person_icon from "../../assets/icons/player_icon.svg";
 import { Howl, Howler } from "howler";
 import diceRollAudio from "../../assets/audio/dice_roll.mp3";
 import rigthTileAudio from "../../assets/audio/right_tile.mp3";
@@ -26,7 +23,6 @@ export default function MultiPlayerGame(props) {
     diceColor,
     setDiceColor,
     shouldStartTimer,
-    setShouldStartTimer,
     minutes,
     setMinutes,
     seconds,
@@ -65,7 +61,7 @@ export default function MultiPlayerGame(props) {
     return () => {
       window.removeEventListener("resize", detectSize);
     };
-  }, []);
+  }, [windowDimension]);
 
   // useEffect to shuffle the tiles only when the component is rendered the first time.
   useEffect(() => {
@@ -337,15 +333,6 @@ export default function MultiPlayerGame(props) {
         )}
 
         {playerWon && <p className="congrats-text winner-text">You Won!</p>}
-        {playerWon && (
-          <ReactConfetti
-            width={windowDimension.width}
-            height={windowDimension.height}
-            tweenDuration={1000}
-            gravity={0.05}
-            recycle={shouldRunConfetti}
-          />
-        )}
         {playerLost && (
           <div className="congrats-text">
             <p className="loser-text">You Lost!</p>
@@ -353,6 +340,15 @@ export default function MultiPlayerGame(props) {
           </div>
         )}
       </div>
+      {playerWon && (
+        <ReactConfetti
+          width={windowDimension.width}
+          height={windowDimension.height}
+          tweenDuration={1000}
+          gravity={0.05}
+          recycle={shouldRunConfetti}
+        />
+      )}
       <ChatMultiplayer gameRoomId={gameRoomId}></ChatMultiplayer>
     </React.Fragment>
   );
