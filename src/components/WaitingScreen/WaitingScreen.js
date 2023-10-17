@@ -107,7 +107,6 @@ export default function WaitingScreen() {
     let cc = null;
     gameSocket.current.on("player-timer-call", (code) => {
       cc = code;
-      console.log(code);
       if (playerCode1.current === code) {
         setShowPlayerOneTimer(true);
         setCounter1(10);
