@@ -34,7 +34,31 @@
 }
 
 .single-player-tiles-dice {
-  
+  height: 100vh;
+  z-index: 1;
+  position: relative;
+}
+
+.back-image {
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../../../src/assets/game-screen-background.jpg");
+  filter: blur(13px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  position: fixed;
+}
+
+.back-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(54, 61, 70, 0.32); /* Adjust the opacity here */
 }
 
 .single-player-color-tiles-wrapper {
@@ -43,9 +67,16 @@
   gap: 10px;
 }
 
+.tile-icon-image {
+  width: 40%;
+  height: 40%;
+  background-image: url("../../../src/assets/icons/tile-icon.svg");
+}
+
 .single-player-color-tiles {
-  width: 100px;
-  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 10px;
   cursor: pointer;
 

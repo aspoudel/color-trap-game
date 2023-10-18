@@ -1,7 +1,13 @@
+.waiting-screen-container {
+  width: 100vw;
+  height: 100vh;
+}
+
 .corner {
   position: absolute;
   display: flex;
   align-items: center;
+  z-index: 1;
 }
 
 .corner img {
@@ -39,6 +45,10 @@
   align-items: center;
 }
 
+.person-icon-holder img {
+
+}
+
 .corner .placeholder-image {
   width: 150px;
   height: 150px;
@@ -70,7 +80,7 @@
 }
 
 .corner p {
-  color: #bebebe;
+  color: #DD6565;
   text-align: center;
 
   @media(max-width: 576px) {
@@ -92,6 +102,10 @@
   @media(min-width: 1200px) {
     
   }
+}
+
+p.player-text {
+  color: white;
 }
 
 .placeholder-collection {
@@ -176,9 +190,12 @@
 }
 
 .players-required-warning {
+  position: absolute;
   color: red;
   text-align: center;
   margin-top: 100px;
+  margin-left: 50%;
+  transform: translateX(-50%);
   font-size: 1em;
 
   @media(max-width: 576px) {

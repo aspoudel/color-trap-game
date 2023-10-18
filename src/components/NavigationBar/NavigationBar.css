@@ -14,12 +14,12 @@
   position: relative;
   font-size: 20px;
   height: 100px;
-  color: #707070;
+  color: #727272;
   transition: background-color ease 0.15s;
 }
 
 .active {
-  color: #CACACA;
+  color: #000000;
 }
 
 .home::after, .rules::before {
@@ -42,5 +42,5 @@
 
 .home:hover, .rules:hover {
   cursor: pointer;
-  background-color: #3e3e3e;
+  background-color: #adcbd7;
 }

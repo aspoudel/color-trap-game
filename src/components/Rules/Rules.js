@@ -4,7 +4,7 @@ import NavigationBar from "../NavigationBar/NavigationBar";
 
 export default function Rules() {
   return (
-    <div>
+    <div className="rules-page">
       <NavigationBar />
       <h1 className="rules-title">Cobra's Den</h1>
       <div className="rule-book">

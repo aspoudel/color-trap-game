@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { io } from "socket.io-client";
 import person_icon from "../../assets/icons/player_icon.svg";
+import opponent_icon from "../../assets/icons/opponent_icon.svg";
 import playerPlaceholder from "../../assets/icons/waiting_for_player.svg";
 import "./WaitingScreen.css";
 import MultiPlayerGame from "../MultiPlayerGame/MultiPlayerGame";
@@ -253,11 +254,11 @@ export default function WaitingScreen() {
   }
 
   return (
-    <div>
+    <div className="waiting-screen-container">
       <div className="corner player-icon-top-left">
         {players.length >= 2 ? (
           <div className="person-icon-holder">
-            <img src={person_icon}></img>
+            <img src={opponent_icon}></img>
             {showPlayerTwoTimer && <TimerBar />}
           </div>
         ) : (
@@ -278,7 +279,7 @@ export default function WaitingScreen() {
         {players.length >= 3 ? (
           <div className="person-icon-holder">
             {showPlayerThreeTimer && <TimerBar extraMarginRight={true} />}
-            <img src={person_icon}></img>
+            <img src={opponent_icon}></img>
           </div>
         ) : (
           <>
@@ -299,7 +300,7 @@ export default function WaitingScreen() {
           <div className="person-icon-holder">
             <div>
               <img src={person_icon}></img>
-              <p>You</p>
+              <p className="player-text">You</p>
             </div>
             {showPlayerOneTimer && <TimerBar />}
           </div>
@@ -321,7 +322,7 @@ export default function WaitingScreen() {
         {players.length >= 4 ? (
           <div className="person-icon-holder">
             {showPlayerFourTimer && <TimerBar extraMarginRight={true} />}
-            <img src={person_icon}></img>
+            <img src={opponent_icon}></img>
           </div>
         ) : (
           <>

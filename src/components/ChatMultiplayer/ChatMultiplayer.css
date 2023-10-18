@@ -1,3 +1,8 @@
+.slider-chat {
+  position: fixed;
+  z-index: 1;
+}
+
 .slider-button {
   position: fixed;
   bottom: 15%;

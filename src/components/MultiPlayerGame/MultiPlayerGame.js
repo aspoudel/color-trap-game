@@ -117,7 +117,6 @@ export default function MultiPlayerGame(props) {
         if (code === playerCode1.current) {
           setIsRollDiceAllowed(false);
         }
-        console.log(nextPlayerCode + " should have its dice allowed");
         if (nextPlayerCode === playerCode1.current) {
           setIsRollDiceAllowed(true);
         }
@@ -223,11 +222,12 @@ export default function MultiPlayerGame(props) {
         setCounter3(10);
         setCounter4(10);
       }, 2000);
-
+      const childIcon = document.querySelectorAll(".tile-icon")[index];
       const targetElement = document.querySelectorAll(
         ".multi-player-color-tiles"
       )[index];
       targetElement.style.backgroundColor = tiles[index].color;
+      targetElement.removeChild(childIcon);
       setTimeout(() => {
         targetElement.style.backgroundColor = "#E3E3E3";
         gameSocket.current.emit(
@@ -236,6 +236,7 @@ export default function MultiPlayerGame(props) {
           playerCode1.current,
           gameRoomId.current
         );
+        targetElement.appendChild(childIcon);
       }, 1000);
     }
   }
@@ -255,6 +256,7 @@ export default function MultiPlayerGame(props) {
   Howler.volume(1.0);
   return (
     <React.Fragment>
+      <div className="back-image"></div>
       <div className="multi-player-tiles-dice">
         <div className="timer">
           <p>{minutes}:</p>
@@ -292,10 +294,16 @@ export default function MultiPlayerGame(props) {
                           }}
                           style={{
                             backgroundColor: childElement.matched
-                              ? "#292929"
+                              ? ""
                               : "#E3E3E3",
                           }}
-                        ></div>
+                        >
+                          <div
+                            className={`tile-icon ${
+                              childElement.matched ? "" : "tile-icon-image"
+                            }`}
+                          ></div>
+                        </div>
                       ))}
                   </div>
                 )}

@@ -1,7 +1,8 @@
 html {
-  background-color: #292929;
+  background-color: #050D0F;
 }
 
 .page-not-found {
-  color:whitesmoke;
+  color:black;
+  height: 100vh;
 }

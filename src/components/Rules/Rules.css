@@ -1,16 +1,23 @@
+.rules-page {
+  height: 100vh;
+}
+
 .rules-title {
   font-size: 60px;
-  color: #808080;
+  color: #2e2e2e;
   padding: 50px 100px;
 }
 
 .rule-book {
   padding: 0% 10%;
-  color: #808080;
+  height: 40%;
+  color: #DD6565;
   font-size: 25px;
+  overflow: auto;
 
   @media(max-width: 576px) {
     font-size: 20px;
+    height: 40%;
   }
 
   @media(min-width: 576px) and (max-width: 768px) {
@@ -19,6 +26,7 @@
 
   @media(min-width: 768px) and (max-width: 992px) {
     font-size: 22px;
+    height: 50%;
   }
 
   @media(min-width: 992px) and (max-width: 1200px) {

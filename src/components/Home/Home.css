@@ -1,5 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
+
 .title {
   font-size: 100px;
+  font-family: 'Pinyon Script', cursive;
   text-align: center;
   margin-top: 30px;
   color: #808080;
@@ -74,6 +78,7 @@
   }
 
   @media(min-width: 768px) and (max-width: 992px) {
+    padding: 0px 100px;
     margin-top: 350px;
   }
 
@@ -118,9 +123,11 @@
 }
 
 .game-mode-text {
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
   text-decoration: none;
-  font-size: 20px;
-  color: #707070;
+  font-size: 25px;
+  color: #ffffff;
 }
 
 .game-mode-links {

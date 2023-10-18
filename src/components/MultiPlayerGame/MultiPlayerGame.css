@@ -38,10 +38,18 @@
   gap: 10px;
 }
 
+.tile-icon-image {
+  width: 40%;
+  height: 40%;
+  background-image: url("../../../src/assets/icons/tile-icon.svg");
+}
+
 .multi-player-color-tiles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100px;
   height: 100px;
-  background-color: #343434;
   margin-bottom: 10px;
   cursor: pointer;
 

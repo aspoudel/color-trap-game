@@ -66,7 +66,9 @@ export default function SinglePlayerGame() {
       const targetElement = document.querySelectorAll(
         ".single-player-color-tiles"
       )[index];
+      const childIcon = document.querySelectorAll(".tile-icon")[index];
       targetElement.style.backgroundColor = tiles[index].color;
+      targetElement.removeChild(childIcon);
       setTimeout(() => {
         if (color === tiles[index].color) {
           const sound = new Howl({ src: [rigthTileAudio] });
@@ -80,6 +82,7 @@ export default function SinglePlayerGame() {
         } else {
           targetElement.style.backgroundColor = "#E3E3E3";
         }
+        targetElement.appendChild(childIcon);
       }, 1000);
       setShouldPickColor(false);
       setShouldRollDice(true);
@@ -105,87 +108,96 @@ export default function SinglePlayerGame() {
   }
   Howler.volume(1.0);
   return (
-    <div className="single-player-tiles-dice">
-      <div className="single-player-score">
-        <p className="single-player-score-heading">Score:</p>
-        <p className="single-player-score-value">{score}</p>
-      </div>
-      <div className="single-player-color-tiles-wrapper">
-        {tiles.map((tile, index) => {
-          const parentIndex = Math.floor(index / 5);
-          const parentKey = `parent-${parentIndex}`;
-
-          return (
-            <React.Fragment key={index}>
-              {index % 5 === 0 && (
-                <div className="parent-div " key={parentKey}>
-                  {tiles
-                    .slice(index, index + 5)
-                    .map((childElement, childIndex) => (
-                      <div
-                        className={
-                          isTilesClickAllowed
-                            ? `single-player-color-tiles ${
-                                childElement.matched ? "tile-matched" : ""
-                              }`
-                            : `single-player-color-tiles  ${tilesClickedNotAllowedClass}`
-                        }
-                        key={index + childIndex}
-                        onClick={() => {
-                          singlePlayerColorTileClicked(
-                            index + childIndex,
-                            childElement.matched
-                          );
-                        }}
-                        style={{
-                          backgroundColor: childElement.matched
-                            ? "#292929"
-                            : "#E3E3E3",
-                        }}
-                      ></div>
-                    ))}
-                </div>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-      <div className="single-player-dice-wrapper">
-        <div className="single-player-dice">
-          <div
-            className="single-player-dice-color-holder"
-            style={{ backgroundColor: color }}
-          ></div>
+    <div>
+      <div className="back-image"></div>
+      <div className="single-player-tiles-dice">
+        <div className="single-player-score">
+          <p className="single-player-score-heading">Score:</p>
+          <p className="single-player-score-value">{score}</p>
         </div>
-      </div>
-      <div className="single-player-roll-dice-button-wrapper">
-        <button
-          className="single-player-roll-dice-button"
-          disabled={shouldPickColor}
-          onClick={rollDice}
-        >
-          Roll Dice
-        </button>
-      </div>
-      {shouldPickColor && (
-        <p className="single-player-roll-dice-text">Pick a color now!</p>
-      )}
-      {shouldRollDice && (
-        <p className="single-player-roll-dice-text">Roll the dice now!</p>
-      )}
+        <div className="single-player-color-tiles-wrapper">
+          {tiles.map((tile, index) => {
+            const parentIndex = Math.floor(index / 5);
+            const parentKey = `parent-${parentIndex}`;
 
-      <p className="class-text">Practice Mode</p>
+            return (
+              <React.Fragment key={index}>
+                {index % 5 === 0 && (
+                  <div className="parent-div " key={parentKey}>
+                    {tiles
+                      .slice(index, index + 5)
+                      .map((childElement, childIndex) => (
+                        <div
+                          className={
+                            isTilesClickAllowed
+                              ? `single-player-color-tiles ${
+                                  childElement.matched ? "tile-matched" : ""
+                                }`
+                              : `single-player-color-tiles  ${tilesClickedNotAllowedClass}`
+                          }
+                          key={index + childIndex}
+                          onClick={() => {
+                            singlePlayerColorTileClicked(
+                              index + childIndex,
+                              childElement.matched
+                            );
+                          }}
+                          style={{
+                            backgroundColor: childElement.matched
+                              ? ""
+                              : "#E3E3E3",
+                          }}
+                        >
+                          <div
+                            className={`tile-icon ${
+                              childElement.matched ? "" : "tile-icon-image"
+                            }`}
+                          ></div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        <div className="single-player-dice-wrapper">
+          <div className="single-player-dice">
+            <div
+              className="single-player-dice-color-holder"
+              style={{ backgroundColor: color }}
+            ></div>
+          </div>
+        </div>
+        <div className="single-player-roll-dice-button-wrapper">
+          <button
+            className="single-player-roll-dice-button"
+            disabled={shouldPickColor}
+            onClick={rollDice}
+          >
+            Roll Dice
+          </button>
+        </div>
+        {shouldPickColor && (
+          <p className="single-player-roll-dice-text">Pick a color now!</p>
+        )}
+        {shouldRollDice && (
+          <p className="single-player-roll-dice-text">Roll the dice now!</p>
+        )}
 
-      {playerWon && <p className="congrats-text winner-text">You Won!</p>}
-      {playerWon && (
-        <ReactConfetti
-          width={windowDimension.width}
-          height={windowDimension.height}
-          tweenDuration={1000}
-          gravity={0.05}
-          recycle={shouldRunConfetti}
-        />
-      )}
+        <p className="class-text">Practice Mode</p>
+
+        {playerWon && <p className="congrats-text winner-text">You Won!</p>}
+        {playerWon && (
+          <ReactConfetti
+            width={windowDimension.width}
+            height={windowDimension.height}
+            tweenDuration={1000}
+            gravity={0.05}
+            recycle={shouldRunConfetti}
+          />
+        )}
+      </div>
     </div>
   );
 }
