@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
 
+.cobras-home {
+  height: 100vh;
+  overflow: auto;
+  background: linear-gradient(#FFFFFF, #D0DEED, #050D0F);
+}
+
 .title {
   font-size: 100px;
   font-family: 'Pinyon Script', cursive;
@@ -147,10 +153,4 @@
 
 .background-changer:hover {
   background-color: rgba(171, 171, 171, 0.317);
-}
-
-.cobras-home {
-  height: 100vh;
-  overflow: auto;
-  background: linear-gradient(#FFFFFF, #D0DEED, #050D0F);
 }

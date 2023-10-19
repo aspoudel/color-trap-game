@@ -59,22 +59,22 @@ export default function About() {
               >
                 Image by rawpixel.com
               </a>
-              on Freepik
+              &nbsp;on Freepik
             </p>
             <p>
-              Photo by
+              Photo by&nbsp;
               <a
                 target="_blank"
                 href="https://unsplash.com/@sumekler?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash"
               >
                 Jarosław Kwoczała
               </a>
-              on
+              &nbsp;on
               <a
                 target="_blank"
                 href="https://unsplash.com/photos/iJoXOM4J9fE?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash"
               >
-                Unsplash
+                &nbsp;Unsplash
               </a>
             </p>
             <p>
@@ -83,14 +83,14 @@ export default function About() {
                 target="_blank"
                 href="https://pixabay.com/users/realth4-3688152/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1854436"
               >
-                태형 김
+                &nbsp;태형 김
               </a>
-              from
+              &nbsp;from
               <a
                 target="_blank"
                 href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1854436"
               >
-                Pixabay
+                &nbsp;Pixabay
               </a>
             </p>
             <p>
@@ -99,14 +99,14 @@ export default function About() {
                 target="_blank"
                 href="https://pixabay.com/users/publicdomainpictures-14/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=316657"
               >
-                PublicDomainPictures
+                &nbsp;PublicDomainPictures&nbsp;
               </a>
-              from
+              from&nbsp;
               <a
                 target="_blank"
                 href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=316657"
               >
-                Pixabay
+                &nbsp; Pixabay
               </a>
             </p>
           </div>
