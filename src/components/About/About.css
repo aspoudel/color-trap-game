@@ -1,14 +1,16 @@
-.rules-page {
+.cobras-about {
   height: 100vh;
-  overflow: auto;
   background: linear-gradient(#FFFFFF, #D0DEED, #050D0F);
+  overflow: auto;
+  color: #000000;
+  padding: 0% 10%;
+  overflow-y: hidden;
 }
 
-.rules-title {
-  font-family: 'Pinyon Script', cursive;
-  color: #2e2e2e;
-  margin-top: 30px;
+.cobras-about h1 {
   text-align: center;
+  margin-top: 30px;
+  font-family: 'Pinyon Script', cursive;
 
   @media(max-width: 576px) {
     font-size: 60px;
@@ -31,10 +33,7 @@
   }
 }
 
-.rule-book {
-  margin-top: 60px;
-  padding: 0% 10%;
-  color: #000000;
+.cobras-about p {
   font-size: 25px;
 
   @media(max-width: 576px) {
@@ -54,27 +53,10 @@
   }
 }
 
-.rules-line {
-  width: 80vw;
-  text-align: justify;
+.the-game {
+  margin-top: 60px;
+}
 
-  @media(max-width: 576px) {
-   
-  }
-
-  @media(min-width: 576px) and (max-width: 768px) {
-    
-  }
-
-  @media(min-width: 768px) and (max-width: 992px) {
-   
-  }
-
-  @media(min-width: 992px) and (max-width: 1200px) {
-
-  }
-
-  @media(min-width: 1200px) {
-
-  }
+.scrollable {
+  text-align: center;
 }

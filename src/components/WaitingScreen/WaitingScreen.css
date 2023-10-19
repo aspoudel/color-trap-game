@@ -1,6 +1,7 @@
 .waiting-screen-container {
   width: 100vw;
   height: 100vh;
+  background: linear-gradient(#FFFFFF, #D0DEED, #050D0F);
 }
 
 .corner {

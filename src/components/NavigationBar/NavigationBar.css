@@ -5,7 +5,7 @@
   top: 10;
 }
 
-.home, .rules {
+.home, .rules, .about {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +14,7 @@
   position: relative;
   font-size: 20px;
   height: 100px;
-  color: #727272;
+  color: #aea1a1;
   transition: background-color ease 0.15s;
 }
 
@@ -32,6 +32,20 @@
   background-color: #000; /* Adjust the color of the vertical line */
 }
 
+.rules::after, .about::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 100px;
+  width: 1px;
+  background-color: #000;
+}
+
+.about::before {
+  left: 0;
+}
+
 .home::after {
   right: 0;
 }
@@ -40,7 +54,11 @@
   left: 0;
 }
 
-.home:hover, .rules:hover {
+.rules:after {
+  right: 0;
+}
+
+.home:hover, .rules:hover, .about:hover {
   cursor: pointer;
   background-color: #adcbd7;
 }

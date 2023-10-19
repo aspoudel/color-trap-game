@@ -21,6 +21,11 @@ export default function () {
     navigate("/");
   }
 
+  function openAboutPage() {
+    setActiveLink("/about");
+    navigate("/about");
+  }
+
   return (
     <div className="navigation-bar">
       <div
@@ -34,6 +39,12 @@ export default function () {
         onClick={openRulesPage}
       >
         Rules
+      </div>
+      <div
+        className={`about ${activeLink === "/about" ? "active" : ""}`}
+        onClick={openAboutPage}
+      >
+        About
       </div>
     </div>
   );

@@ -244,16 +244,16 @@
 }
 
 .loser-text {
-  color: hsl(0, 100%, 62%); /* Set the text color as desired */
+  color: #8F282A; /* Set the text color as desired */
 }
 
 .winner-text {
-  color: hsl(115, 100%, 63%); /* Set the text color as desired */
+  color: #228D66; /* Set the text color as desired */
 }
 
 .lost-subtitle {
   font-size: 80px;
-  color: rgb(0, 179, 0);
+  color: #361E97;
 
   @media(max-width: 576px) {
     font-size: 40px;

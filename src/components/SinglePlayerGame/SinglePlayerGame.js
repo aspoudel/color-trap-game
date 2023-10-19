@@ -83,9 +83,9 @@ export default function SinglePlayerGame() {
           targetElement.style.backgroundColor = "#E3E3E3";
         }
         targetElement.appendChild(childIcon);
+        setShouldRollDice(true);
+        setShouldPickColor(false);
       }, 1000);
-      setShouldPickColor(false);
-      setShouldRollDice(true);
       setIsTilesClickAllowed(false);
     }
   }
