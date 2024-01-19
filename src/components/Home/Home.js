@@ -27,6 +27,10 @@ export default function Home() {
             <p className="game-mode-text">Battle</p>
           </Link>
         </div>
+        <div className="footer">
+          <p>© 2024 www.colortrapgame.com</p>
+          <p>© 2024 www.colourtrapgame.com</p>
+        </div>
       </div>
     </div>
   );

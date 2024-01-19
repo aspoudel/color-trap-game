@@ -12,9 +12,8 @@ export default function About() {
           <h3 className="the-game">The Game</h3>
           <p>
             A memory game meant for people of all ages to improve their short
-            term memory and to spend times with friend, families and people from
-            around the world. The game was built entirely from imagination and
-            real life inspirations.
+            term memory and to spend time with people from around the world.
+            Bored? Go to Battle and start playing!
           </p>
           <p>
             Connect with the developer:{" "}
@@ -22,8 +21,8 @@ export default function About() {
               LinkedIn
             </a>
           </p>
-          <p>© 2023 www.colortrapgame.com</p>
-          <p>© 2023 www.colourtrapgame.com</p>
+          <p>© 2024 www.colortrapgame.com</p>
+          <p>© 2024 www.colourtrapgame.com</p>
           <div>
             <h3>Terms of Use</h3>
             <p>
