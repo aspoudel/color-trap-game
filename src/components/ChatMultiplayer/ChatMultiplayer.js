@@ -8,6 +8,7 @@ export default function ChatMultiplayer(props) {
   const [messages, setMessages] = useState([]);
   const [newMessages, setNewMessages] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [shouldAutoFocus, setShouldAutoFocus] = useState(false);
   const messageRef = useRef();
   // Socket reference so that we deal with the same socket in a particular client instance.
   const chatSocket = useRef(null);
@@ -32,6 +33,13 @@ export default function ChatMultiplayer(props) {
     chatSocket.current.on("receive-message", (message) => {
       displayMessage(message);
     });
+
+    if (messageRef.current) {
+      if (shouldAutoFocus) {
+        messageRef.current.focus();
+        setShouldAutoFocus(true);
+      }
+    }
 
     return () => {
       chatSocket.current.disconnect();
@@ -77,7 +85,7 @@ export default function ChatMultiplayer(props) {
                 ref={messageRef}
                 id="messageText"
                 type="text"
-                autoFocus={true}
+                autoFocus={false}
               ></input>
               <button id="sendButton">Send</button>
             </div>

@@ -32,10 +32,12 @@
 }
 
 .rule-book {
+  width: 70vw;
   margin-top: 60px;
   padding: 0% 10%;
   color: #000000;
   font-size: 25px;
+  margin: auto;
 
   @media(max-width: 576px) {
     font-size: 20px;
@@ -55,7 +57,6 @@
 }
 
 .rules-line {
-  width: 80vw;
   text-align: justify;
 
   @media(max-width: 576px) {

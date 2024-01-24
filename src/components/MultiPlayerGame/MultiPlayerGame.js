@@ -243,15 +243,17 @@ export default function MultiPlayerGame(props) {
 
   // Function to call roll dice in the server.
   function rollDice() {
-    const sound = new Howl({ src: [diceRollAudio] });
-    sound.play();
-    setIsRollDiceAllowed(false);
-    setIsDiceRolling(true);
-    gameSocket.current.emit(
-      "roll-dice-request",
-      playerCode1.current,
-      gameRoomId.current
-    );
+    if (isRollDiceAllowed) {
+      const sound = new Howl({ src: [diceRollAudio] });
+      sound.play();
+      setIsRollDiceAllowed(false);
+      setIsDiceRolling(true);
+      gameSocket.current.emit(
+        "roll-dice-request",
+        playerCode1.current,
+        gameRoomId.current
+      );
+    }
   }
   Howler.volume(1.0);
   return (
@@ -312,8 +314,9 @@ export default function MultiPlayerGame(props) {
           })}
         </div>
         <div className="multi-player-dice-wrapper">
-          <div className="multi-player-dice">
+          <div onClick={rollDice} className="multi-player-dice">
             <div
+              onClick={rollDice}
               className={
                 isDiceRolling
                   ? "multi-player-dice-color-holder dice-rolling"

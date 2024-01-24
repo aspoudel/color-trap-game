@@ -92,19 +92,21 @@ export default function SinglePlayerGame() {
 
   // Function to roll the dice.
   function rollDice() {
-    const sound = new Howl({ src: [diceRollAudio] });
-    sound.play();
-    const max = diceColors.length - 1;
-    const min = 0;
-    const range = max - min + 1;
-    const randomNumber = Math.floor(Math.random() * range) + min;
-    setColor(diceColors[randomNumber]);
-    if (!shouldStartTimer) {
-      setShouldStartTimer(true);
+    if (!shouldPickColor) {
+      const sound = new Howl({ src: [diceRollAudio] });
+      sound.play();
+      const max = diceColors.length - 1;
+      const min = 0;
+      const range = max - min + 1;
+      const randomNumber = Math.floor(Math.random() * range) + min;
+      setColor(diceColors[randomNumber]);
+      if (!shouldStartTimer) {
+        setShouldStartTimer(true);
+      }
+      setShouldPickColor(true);
+      setShouldRollDice(false);
+      setIsTilesClickAllowed(true);
     }
-    setShouldPickColor(true);
-    setShouldRollDice(false);
-    setIsTilesClickAllowed(true);
   }
   Howler.volume(1.0);
   return (
@@ -162,7 +164,7 @@ export default function SinglePlayerGame() {
           })}
         </div>
         <div className="single-player-dice-wrapper">
-          <div className="single-player-dice">
+          <div onClick={rollDice} className="single-player-dice">
             <div
               className="single-player-dice-color-holder"
               style={{ backgroundColor: color }}
