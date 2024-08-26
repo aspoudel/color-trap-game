@@ -44,9 +44,7 @@ export default function WaitingScreen() {
   // Socket reference so that we deal with the same socket in a particular client instance.
   let gameSocket = useRef(null);
   useEffect(() => {
-    gameSocket.current = io(
-      "https://www.color-trap-game-api.onrender.com/game"
-    );
+    gameSocket.current = io("https://api.colortrapgame.com/game");
 
     // Socket connection to set the initial game state from the server.
     gameSocket.current.on(

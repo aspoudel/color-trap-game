@@ -23,12 +23,9 @@ export default function ChatMultiplayer(props) {
 
   useEffect(() => {
     // Initializing the chat socket.
-    chatSocket.current = io(
-      "https://www.color-trap-game-api.onrender.com/chat",
-      {
-        auth: { gameRoomId: gameRoomId.current },
-      }
-    );
+    chatSocket.current = io("https://api.colortrapgame.com/chat", {
+      auth: { gameRoomId: gameRoomId.current },
+    });
 
     chatSocket.current.on("connect", () => {});
 
